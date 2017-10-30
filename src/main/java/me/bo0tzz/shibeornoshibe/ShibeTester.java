@@ -1,36 +1,40 @@
 package me.bo0tzz.shibeornoshibe;
 
 import com.google.gson.Gson;
-import jdk.incubator.http.HttpClient;
-import jdk.incubator.http.HttpRequest;
-import jdk.incubator.http.HttpResponse;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 public class ShibeTester {
 
-    private static final String API_URI = "https://shiba.vil.so/";
-    private final HttpClient httpClient;
+    private static final String API_URI = "http://shiba.vil.so/";
 
     public ShibeTester() {
-        httpClient = HttpClient.newHttpClient();
     }
 
     public ShibeResult shibeCertainty(InputStream image) {
         HttpResponse<String> response;
+
         try {
-            HttpRequest request = HttpRequest.newBuilder(new URI(API_URI))
-                    .POST(HttpRequest.BodyProcessor.fromInputStream(() -> image))
-                    .build();
-            response = httpClient.send(request, HttpResponse.BodyHandler.asString());
-        } catch (URISyntaxException | IOException | InterruptedException e) {
+            File tmp = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
+            Files.copy(image, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            response = Unirest.post(API_URI)
+                    .field("image", tmp)
+                    .asString();
+        } catch (UnirestException|IOException e) {
             e.printStackTrace();
             return ShibeResult.nullResult();
         }
-        ShibeResult results = new Gson().fromJson(response.body(), ShibeResult.class);
+
+        System.out.println("Printing body " + response.getBody());
+        ShibeResult results = new Gson().fromJson(response.getBody(), ShibeResult.class);
+        System.out.println("Printing results: \n" + results);
         return results;
     }
 

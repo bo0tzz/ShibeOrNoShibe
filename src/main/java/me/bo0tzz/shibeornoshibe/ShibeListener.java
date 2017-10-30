@@ -1,5 +1,6 @@
 package me.bo0tzz.shibeornoshibe;
 
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.message.PhotoMessageReceivedEvent;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 public class ShibeListener implements Listener {
     private final ShibeOrNoShibe main;
     private final ShibeTester shibeTester;
-    private final static String OUTPUT = "Shibe confidence: %s, Doggo confidence: %s, Random confidence: %s";
+    private final static String OUTPUT = "*Shiba*: %.2f%%\n*Doggo:* %.2f%%\n*Random*: %.2f%%";
 
     public ShibeListener(ShibeOrNoShibe main) {
         this.main = main;
@@ -38,7 +39,10 @@ public class ShibeListener implements Listener {
             return;
         }
         HashMap<String, Float> prediction = confidence.getPrediction();
-        String out = String.format(OUTPUT, prediction.get("shiba"), prediction.get("doggo"), prediction.get("random"));
-        event.getChat().sendMessage(out);
+        String out = String.format(OUTPUT,
+                prediction.get("shiba")*100,
+                prediction.get("doggo")*100,
+                prediction.get("random")*100);
+        event.getChat().sendMessage(SendableTextMessage.markdown(out).build());
     }
 }

@@ -7,8 +7,8 @@ public class ShibeOrNoShibe {
 
     public static void main(String[] args) {
         String key = System.getenv("BOT_KEY");
+        key = key == null ? args[0] : key;
         new ShibeOrNoShibe(key);
-
     }
 
     ShibeOrNoShibe(String key) {
