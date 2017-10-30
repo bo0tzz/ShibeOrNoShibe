@@ -32,7 +32,7 @@ public class ShibeListener implements Listener {
             return;
         }
 
-        ShibeResults confidence = shibeTester.shibeCertainty(photo);
+        ShibeResult confidence = shibeTester.shibeCertainty(photo);
         if (confidence == null) {
             event.getChat().sendMessage("Something has gone wrong while checking if your image is a shibe! If this keeps happening, please contact @bo0tzz");
             return;

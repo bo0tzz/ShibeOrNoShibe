@@ -19,8 +19,8 @@ public class ShibeTester {
         httpClient = HttpClient.newHttpClient();
     }
 
-    public ShibeResults shibeCertainty(InputStream image) {
-        HttpResponse<String> response = null;
+    public ShibeResult shibeCertainty(InputStream image) {
+        HttpResponse<String> response;
         try {
             HttpRequest request = HttpRequest.newBuilder(new URI(API_URI))
                     .POST(HttpRequest.BodyProcessor.fromInputStream(() -> image))
@@ -28,9 +28,9 @@ public class ShibeTester {
             response = httpClient.send(request, HttpResponse.BodyHandler.asString());
         } catch (URISyntaxException | IOException | InterruptedException e) {
             e.printStackTrace();
-            return ShibeResults.nullResult();
+            return ShibeResult.nullResult();
         }
-        ShibeResults results = new Gson().fromJson(response.body(), ShibeResults.class);
+        ShibeResult results = new Gson().fromJson(response.body(), ShibeResult.class);
         return results;
     }
 

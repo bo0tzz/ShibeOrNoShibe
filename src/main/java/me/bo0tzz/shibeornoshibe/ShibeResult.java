@@ -5,13 +5,13 @@ import lombok.Data;
 import java.util.HashMap;
 
 @Data
-public class ShibeResults {
+public class ShibeResult {
 
     private final boolean success;
     private final HashMap<String, Float> prediction;
 
-    public static ShibeResults nullResult() {
-        return new ShibeResults(false, null);
+    public static ShibeResult nullResult() {
+        return new ShibeResult(false, null);
     }
 
 }
