@@ -7,9 +7,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
 
 public class ShibeTester {
 
@@ -18,16 +15,14 @@ public class ShibeTester {
     public ShibeTester() {
     }
 
-    public ShibeResult shibeCertainty(InputStream image) {
+    public ShibeResult shibeCertainty(File image) {
         HttpResponse<String> response;
 
         try {
-            File tmp = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
-            Files.copy(image, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
             response = Unirest.post(API_URI)
-                    .field("image", tmp)
+                    .field("image", image)
                     .asString();
-        } catch (UnirestException|IOException e) {
+        } catch (UnirestException e) {
             e.printStackTrace();
             return ShibeResult.nullResult();
         }
