@@ -32,9 +32,12 @@ public class ShibeTester {
             return ShibeResult.nullResult();
         }
 
-        System.out.println("Printing body " + response.getBody());
+        if (response.getStatus() != 200) {
+            System.out.println("Got incorrect response!\n" + response.getStatusText() + "\n" + response.getBody());
+            return ShibeResult.nullResult();
+        }
+
         ShibeResult results = new Gson().fromJson(response.getBody(), ShibeResult.class);
-        System.out.println("Printing results: \n" + results);
         return results;
     }
 
