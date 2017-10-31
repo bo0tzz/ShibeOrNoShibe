@@ -7,7 +7,7 @@ WORKDIR /app/build
 RUN apk add --no-cache maven
 COPY . .
 
-RUN mvn clean install
+RUN mvn clean package
 RUN cp target/shibeornoshibe.jar /app/run/
 
 WORKDIR /app/run
