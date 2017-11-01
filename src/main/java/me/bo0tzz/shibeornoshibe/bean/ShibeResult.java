@@ -12,6 +12,11 @@ public class ShibeResult {
         this.prediction = prediction;
     }
 
+    public ShibeResult(ShibeResult from) {
+        this.success = from.isSuccess();
+        this.prediction = from.getPrediction();
+    }
+
     public boolean isSuccess() {
         return success;
     }

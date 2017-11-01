@@ -1,7 +1,9 @@
 package me.bo0tzz.shibeornoshibe.engine;
 
 import me.bo0tzz.shibeornoshibe.ShibeOrNoShibe;
+import me.bo0tzz.shibeornoshibe.bean.CachedShibeResult;
 import me.bo0tzz.shibeornoshibe.bean.ShibeResult;
+import me.bo0tzz.shibeornoshibe.db.ShibeMorphia;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.message.PhotoMessageReceivedEvent;
@@ -9,23 +11,22 @@ import pro.zackpollard.telegrambot.api.event.chat.message.PhotoMessageReceivedEv
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class ShibeListener implements Listener {
     private final ShibeOrNoShibe main;
     private final ShibeTester shibeTester;
-    private final Map<String, ShibeResult> cachedResults;
+    private final ShibeMorphia morphia;
     private final static String OUTPUT = "*Shiba*: %.2f%%\n*Doggo:* %.2f%%\n*Random*: %.2f%%";
 
     public ShibeListener(ShibeOrNoShibe main) {
         this.main = main;
         this.shibeTester = new ShibeTester();
-        this.cachedResults = new HashMap<>();
+        this.morphia = new ShibeMorphia();
     }
 
     public void onPhotoMessageReceived(PhotoMessageReceivedEvent event) {
-        ShibeResult cached = cachedResults.get(event.getContent().getContent()[0].getFileId());
+        CachedShibeResult cached = morphia.fromCache(event.getContent().getContent()[0].getFileId());
         if (cached != null) {
             HashMap<String, Float> prediction = cached.getPrediction();
             String out = String.format(OUTPUT,
@@ -54,7 +55,7 @@ public class ShibeListener implements Listener {
             return;
         }
 
-        cachedResults.put(event.getContent().getContent()[0].getFileId(), confidence);
+        morphia.cacheShibe(event.getContent().getContent()[0].getFileId(), confidence);
 
         HashMap<String, Float> prediction = confidence.getPrediction();
         String out = String.format(OUTPUT,
