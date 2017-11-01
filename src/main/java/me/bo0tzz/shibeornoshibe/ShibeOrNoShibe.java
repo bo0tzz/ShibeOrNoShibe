@@ -1,5 +1,6 @@
 package me.bo0tzz.shibeornoshibe;
 
+import me.bo0tzz.shibeornoshibe.engine.ShibeListener;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 
 public class ShibeOrNoShibe {

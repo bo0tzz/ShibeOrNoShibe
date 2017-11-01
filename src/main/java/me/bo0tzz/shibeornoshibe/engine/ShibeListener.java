@@ -1,5 +1,7 @@
-package me.bo0tzz.shibeornoshibe;
+package me.bo0tzz.shibeornoshibe.engine;
 
+import me.bo0tzz.shibeornoshibe.ShibeOrNoShibe;
+import me.bo0tzz.shibeornoshibe.bean.ShibeResult;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.message.PhotoMessageReceivedEvent;

@@ -1,4 +1,4 @@
-package me.bo0tzz.shibeornoshibe;
+package me.bo0tzz.shibeornoshibe.bean;
 
 import java.util.HashMap;
 
