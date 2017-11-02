@@ -29,35 +29,43 @@ public class ShibeListener implements Listener {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        System.out.println("Received a message from chat " + event.getChat().getName());
         User user = event.getMessage().getSender();
 
         if (user != null) {
             morphia.updateUserName(user.getId(), user.getUsername());
+            System.out.println("Updated DB with user " + user.getFullName());
         }
     }
 
     @Override
     public void onMessageEditReceived(MessageEditReceivedEvent event) {
+        System.out.println("Received a message edit from chat " + event.getChat().getName());
         User user = event.getMessage().getSender();
 
         if (user != null) {
             morphia.updateUserName(user.getId(), user.getUsername());
+            System.out.println("Updated DB with user " + user.getFullName());
         }
     }
 
     @Override
     public void onParticipantJoinGroupChat(ParticipantJoinGroupChatEvent event) {
+        System.out.println("Received a join event from chat " + event.getChat().getName());
         User user = event.getParticipant();
 
         if (user != null) {
             morphia.updateUserName(user.getId(), user.getUsername());
+            System.out.println("Updated DB with user " + user.getFullName());
         }
     }
 
     public void onPhotoMessageReceived(PhotoMessageReceivedEvent event) {
+        System.out.println("Received a photo message from chat " + event.getChat().getName());
         ShibeResult confidence = morphia.fromCache(event.getContent().getContent()[0].getFileId());
 
         if (confidence == null) {
+            System.out.println("Could not retrieve shibe from cache");
             File image;
             UUID uuid = UUID.randomUUID();
             try {
@@ -75,13 +83,16 @@ public class ShibeListener implements Listener {
                 return;
             }
             morphia.cacheShibe(event.getContent().getContent()[0].getFileId(), confidence);
+            System.out.println("Created and cached new shibe");
         }
 
         String out;
 
+        System.out.println("Switching through chat types for " + event.getChat().getType());
         switch (event.getChat().getType()) {
             case GROUP:
             case SUPERGROUP:
+                System.out.println("Chat is a group type!");
                 List<ShibeUser> users = morphia.getUsersToTag(event.getChat(), confidence.getCategory());
                 if (users == null) {
                     event.getChat().sendMessage(String.format(OUTPUT_TAG, confidence.getCategory(), "Nobody :("));
@@ -95,9 +106,11 @@ public class ShibeListener implements Listener {
                 break;
             case PRIVATE:
             case CHANNEL:
+                System.out.println("Chat is not a group type!");
                 out = formatShibeOutput(OUTPUT, confidence.getPrediction());
                 break;
             default:
+                System.out.println("Chat was nothing!");
                 return;
         }
 
