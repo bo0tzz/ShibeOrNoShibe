@@ -11,6 +11,13 @@ public class ShibeUser {
     private boolean pingShibe;
     private boolean pingDoggo;
 
+    public ShibeUser(User user, boolean pingShibe, boolean pingDoggo) {
+        this.UID = user.getId();
+        this.username = user.getUsername();
+        this.pingShibe = pingShibe;
+        this.pingDoggo = pingDoggo;
+    }
+
     public long getUID() {
         return UID;
     }
@@ -48,13 +55,6 @@ public class ShibeUser {
             default:
                 return false;
         }
-    }
-
-    public ShibeUser(User user, boolean pingShibe, boolean pingDoggo) {
-        this.UID = user.getId();
-        this.username = user.getUsername();
-        this.pingShibe = pingShibe;
-        this.pingDoggo = pingDoggo;
     }
 
 }
