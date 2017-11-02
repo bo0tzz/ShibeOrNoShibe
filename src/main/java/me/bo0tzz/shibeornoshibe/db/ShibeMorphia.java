@@ -1,6 +1,5 @@
 package me.bo0tzz.shibeornoshibe.db;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import me.bo0tzz.shibeornoshibe.bean.Category;
 import me.bo0tzz.shibeornoshibe.bean.ShibeGroup;
@@ -24,14 +23,11 @@ public class ShibeMorphia {
 
     public ShibeMorphia() {
         this.morphia = new Morphia();
+        morphia.getMapper().getOptions().setObjectFactory(new CustomMorphiaObjectFactory());
         morphia.mapPackage("me.bo0tzz.shibeornoshibe.bean");
         MongoClient mongo = new MongoClient(System.getenv("MONGO_IP")); //if env var does not exist, default 'localhost' will be used
         this.datastore = morphia.createDatastore(mongo, "shibe");
         datastore.ensureIndexes();
-    }
-
-    public void cacheShibe(String fileID, ShibeResult result) {
-        cacheShibe(new ShibeResult(result, fileID));
     }
 
     public void cacheShibe(ShibeResult result) {
@@ -51,15 +47,19 @@ public class ShibeMorphia {
     }
 
     public ShibeGroup getShibeGroup (Chat chat) {
-        ShibeGroup group = datastore.createQuery(ShibeGroup.class)
-                .field("_id").equal(chat.getId())
-                .get();
+        ShibeGroup group = getShibeGroup(chat.getId());
 
         if (group == null && chat instanceof GroupChat) {
-            group = new ShibeGroup((GroupChat)chat);
+            group = ShibeGroup.from((GroupChat)chat);
         }
 
         return group;
+    }
+
+    public ShibeGroup getShibeGroup(String chatID) {
+        return datastore.createQuery(ShibeGroup.class)
+                .field("_id").equal(chatID)
+                .get();
     }
 
     public boolean updateShibeGroup(ShibeGroup group) {
@@ -75,24 +75,33 @@ public class ShibeMorphia {
         datastore.save(group);
     }
 
+    public ShibeUser getShibeUser(long UID) {
+        return datastore.find(ShibeUser.class)
+                .field("_id").equal(UID).get();
+    }
+
+    public void saveShibeUser(ShibeUser user) {
+        datastore.save(user);
+    }
+
     public boolean updateUserName(long UID, String username) {
-        Query query = datastore.find(ShibeUser.class)
+        Query<ShibeUser> query = datastore.find(ShibeUser.class)
                 .field("_id").equal(UID);
 
-        UpdateOperations<ShibeGroup> update = datastore.createUpdateOperations(ShibeGroup.class)
-                .set("users.$.username", username);
+        UpdateOperations<ShibeUser> update = datastore.createUpdateOperations(ShibeUser.class)
+                .set("username", username);
 
         UpdateResults r = datastore.update(query, update);
         return r.getUpdatedCount() > 0;
     }
 
     public boolean updateUser(ShibeUser user) {
-        Query query = datastore.find(ShibeUser.class)
+        Query<ShibeUser> query = datastore.find(ShibeUser.class)
                 .field("_id").equal(user.getUID());
-        UpdateOperations<ShibeGroup> update = datastore.createUpdateOperations(ShibeGroup.class)
-                .set("users.$.username", user.getUsername())
-                .set("users.$.pingShibe", user.isPingShibe())
-                .set("users.$.pingDoggo", user.isPingDoggo());
+        UpdateOperations<ShibeUser> update = datastore.createUpdateOperations(ShibeUser.class)
+                .set("username", user.getUsername())
+                .set("pingShibe", user.isPingShibe())
+                .set("pingDoggo", user.isPingDoggo());
         UpdateResults r = datastore.update(query, update);
         return r.getUpdatedCount() > 0;
     }

@@ -1,9 +1,13 @@
 package me.bo0tzz.shibeornoshibe.bean;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import lombok.Builder;
+import lombok.Value;
+import me.bo0tzz.shibeornoshibe.gson.ShibeResultDeserializer;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
@@ -11,39 +15,23 @@ import java.io.File;
 import java.util.Map;
 
 @Entity("cache")
+@Builder(toBuilder = true)
+@Value
 public class ShibeResult {
 
     private static final String API_URI = "http://shiba.vil.so/";
-    private boolean success;
-    private Map<String, Float> prediction;
+    private static final Gson gson;
+    private final boolean success;
+    private final Map<String, Float> prediction;
     @Id
-    private String fileID;
-    private Category category;
+    private final String fileID;
+    private final Category category;
 
-    public ShibeResult(boolean success, Map<String, Float> prediction) {
-        this.success = success;
-        this.prediction = prediction;
+    static {
+        gson = new GsonBuilder().registerTypeAdapter(ShibeResult.class, new ShibeResultDeserializer()).create();
     }
 
-    public ShibeResult(ShibeResult parent, String fileID) {
-        this(parent);
-        this.fileID = fileID;
-    }
-
-    public ShibeResult(ShibeResult from) {
-        this.success = from.isSuccess();
-        this.prediction = from.getPrediction();
-    }
-
-    public ShibeResult() {
-        //Method to allow Morphia to instantiate class
-    }
-
-    public static ShibeResult nullResult() {
-        return new ShibeResult(false,null);
-    }
-
-    public static ShibeResult shibeResult(File image, String fileID) {
+    public static ShibeResult from(File image, String fileID) {
         HttpResponse<String> response;
 
         try {
@@ -52,17 +40,20 @@ public class ShibeResult {
                     .asString();
         } catch (UnirestException e) {
             e.printStackTrace();
-            return nullResult();
+            return null;
         }
 
         if (response.getStatus() != 200) {
             System.out.println("Got incorrect response!\n" + response.getStatusText() + "\n" + response.getBody());
-            return nullResult();
+            return null;
         }
 
-        ShibeResult result =  new Gson().fromJson(response.getBody(), ShibeResult.class);
-        result.fileID = fileID;
-        return result;
+        ShibeResult result =  gson.fromJson(response.getBody(), ShibeResult.class);
+        return result.with(fileID);
+    }
+
+    public ShibeResult with(String fileID) {
+        return toBuilder().fileID(fileID).build();
     }
 
     public boolean isShibe() {
@@ -71,21 +62,6 @@ public class ShibeResult {
 
     public boolean isDoggo() {
         return category == Category.DOGGO;
-    }
-
-    public Category getCategory() {
-        if (category == null) {
-            category = Category.fromPredictionMap(prediction);
-        }
-        return category;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public Map<String, Float> getPrediction() {
-        return prediction;
     }
 
 }

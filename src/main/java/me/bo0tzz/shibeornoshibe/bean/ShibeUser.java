@@ -1,51 +1,36 @@
 package me.bo0tzz.shibeornoshibe.bean;
 
+import lombok.Builder;
+import lombok.Value;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import pro.zackpollard.telegrambot.api.user.User;
 
-@Entity
+@Entity("user")
+@Builder(toBuilder = true)
+@Value
 public class ShibeUser {
 
     @Id
     private final long UID;
-    private String username;
-    private boolean pingShibe;
-    private boolean pingDoggo;
+    private final String username;
+    private final boolean pingShibe;
+    private final boolean pingDoggo;
 
-    public ShibeUser(User user, boolean pingShibe, boolean pingDoggo) {
-        this.UID = user.getId();
-        this.username = user.getUsername();
-        this.pingShibe = pingShibe;
-        this.pingDoggo = pingDoggo;
+    public static ShibeUser from(User user) {
+        return builder().UID(user.getId()).username(user.getUsername()).build();
     }
 
-    public long getUID() {
-        return UID;
+    public ShibeUser updateUsername(String username) {
+        return toBuilder().username(username).build();
     }
 
-    public String getUsername() {
-        return username;
+    public ShibeUser setPingShibe(boolean pingShibe) {
+        return toBuilder().pingShibe(pingShibe).build();
     }
 
-    public void updateUsername(String username) {
-        this.username = username;
-    }
-
-    public boolean isPingShibe() {
-        return pingShibe;
-    }
-
-    public boolean isPingDoggo() {
-        return pingDoggo;
-    }
-
-    public void setPingShibe(boolean pingShibe) {
-        this.pingShibe = pingShibe;
-    }
-
-    public void setPingDoggo(boolean pingDoggo) {
-        this.pingDoggo = pingDoggo;
+    public ShibeUser setPingDoggo(boolean pingDoggo) {
+        return toBuilder().pingDoggo(pingDoggo).build();
     }
 
     public boolean pingFor(Category c) {

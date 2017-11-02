@@ -48,20 +48,23 @@ public class ShibeListener implements Listener {
 
     public void updateDatabase(Chat chat, User user) {
         if (user != null) {
-            boolean success = morphia.updateUserName(user.getId(), user.getUsername());
-            if (!success) {
+            boolean userSuccess = morphia.updateUserName(user.getId(), user.getUsername());
+            if (!userSuccess) {
                 ShibeGroup g = morphia.getShibeGroup(chat);
                 if (g == null) return; //I'm a retard
-                g.addUser(new ShibeUser(user, false, false));
-                morphia.updateShibeGroup(g);
+                g = g.addUser(ShibeUser.from(user));
+                boolean groupSuccess = morphia.updateShibeGroup(g);
+                if (!groupSuccess) {
+                    morphia.saveShibeGroup(g);
+                }
             }
         }
     }
 
     public void onPhotoMessageReceived(PhotoMessageReceivedEvent event) {
-        ShibeResult confidence = morphia.fromCache(event.getContent().getContent()[0].getFileId());
+        ShibeResult result = morphia.fromCache(event.getContent().getContent()[0].getFileId());
 
-        if (confidence == null) {
+        if (result == null) {
             File image;
             UUID uuid = UUID.randomUUID();
             try {
@@ -73,8 +76,8 @@ public class ShibeListener implements Listener {
                 event.getChat().sendMessage("Unfortunately something went wrong while processing your image. Please contact @bo0tzz and mention error code " + uuid);
                 return;
             }
-            confidence = ShibeResult.shibeResult(image, event.getContent().getContent()[0].getFileId());
-            if (confidence == null) {
+            result = ShibeResult.from(image, event.getContent().getContent()[0].getFileId());
+            if (result == null) {
                 event.getChat().sendMessage("Something has gone wrong while checking if your image is a shibe! If this keeps happening, please contact @bo0tzz");
                 return;
             }
@@ -84,28 +87,28 @@ public class ShibeListener implements Listener {
         switch (event.getChat().getType()) {
             case GROUP:
             case SUPERGROUP:
-                if (confidence.getCategory() == Category.RANDOM) return;
-                List<ShibeUser> users = morphia.getUsersToTag(event.getChat(), confidence.getCategory());
+                if (result.getCategory() == Category.RANDOM) return;
+                List<ShibeUser> users = morphia.getUsersToTag(event.getChat(), result.getCategory());
                 if (users == null || users.isEmpty()) {
-                    event.getChat().sendMessage(String.format(OUTPUT_TAG, confidence.getCategory().toString().toLowerCase(), "Nobody :("));
+                    event.getChat().sendMessage(String.format(OUTPUT_TAG, result.getCategory().toString().toLowerCase(), "Nobody :("));
                     return;
                 }
                 StringJoiner joiner = new StringJoiner(" ", "", "");
                 for (ShibeUser u : users) {
                     joiner.add(u.getUsername());
                 }
-                out = String.format(OUTPUT_TAG, confidence.getCategory().toString().toLowerCase(), joiner.toString());
+                out = String.format(OUTPUT_TAG, result.getCategory().toString().toLowerCase(), joiner.toString());
                 break;
             case PRIVATE:
             case CHANNEL:
-                out = formatShibeOutput(OUTPUT, confidence.getPrediction());
+                out = formatShibeOutput(OUTPUT, result.getPrediction());
                 break;
             default:
                 return;
         }
 
         event.getChat().sendMessage(SendableTextMessage.markdown(out).build());
-        morphia.cacheShibe(event.getContent().getContent()[0].getFileId(), confidence);
+        morphia.cacheShibe(result);
         updateDatabase(event.getChat(), event.getMessage().getSender());
 
     }
