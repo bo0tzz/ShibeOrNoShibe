@@ -76,7 +76,12 @@ public class ShibeResult {
     public String getCategory() {
         if (category.equals("none")) {
             float maxVal = 0f;
-            prediction.forEach((s, f) -> category = f > maxVal ? s : category);
+            for (Map.Entry<String, Float> e : prediction.entrySet()) {
+                if (e.getValue() > maxVal) {
+                    maxVal = e.getValue();
+                    category = e.getKey();
+                }
+            }
         }
         return category;
     }
