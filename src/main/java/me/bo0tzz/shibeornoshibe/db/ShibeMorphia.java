@@ -77,7 +77,9 @@ public class ShibeMorphia {
 
     public boolean updateUserName(long UID, String username) {
         Query<ShibeGroup> query = datastore.find(ShibeGroup.class)
-                .field("users").equal(new BasicDBObject("UID", UID));
+                .field("users").elemMatch(
+                        datastore.createQuery(ShibeUser.class)
+                        .field("_id").equal(UID));
         UpdateOperations<ShibeGroup> update = datastore.createUpdateOperations(ShibeGroup.class)
                 .set("users.$.username", username);
         UpdateResults r = datastore.update(query, update);
