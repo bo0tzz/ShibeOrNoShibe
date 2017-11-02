@@ -1,7 +1,6 @@
 package me.bo0tzz.shibeornoshibe.db;
 
 import com.mongodb.MongoClient;
-import me.bo0tzz.shibeornoshibe.bean.CachedShibeResult;
 import me.bo0tzz.shibeornoshibe.bean.ShibeGroup;
 import me.bo0tzz.shibeornoshibe.bean.ShibeResult;
 import me.bo0tzz.shibeornoshibe.bean.ShibeUser;
@@ -29,15 +28,15 @@ public class ShibeMorphia {
     }
 
     public void cacheShibe(String fileID, ShibeResult result) {
-        cacheShibe(new CachedShibeResult(fileID, result));
+        cacheShibe(new ShibeResult(result, fileID));
     }
 
-    public void cacheShibe(CachedShibeResult result) {
+    public void cacheShibe(ShibeResult result) {
         datastore.save(result);
     }
 
-    public CachedShibeResult fromCache(String fileID) {
-        return datastore.createQuery(CachedShibeResult.class)
+    public ShibeResult fromCache(String fileID) {
+        return datastore.createQuery(ShibeResult.class)
                 .field("_id").equal(fileID)
                 .get();
     }

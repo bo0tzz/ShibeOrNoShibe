@@ -4,20 +4,31 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 
 import java.io.File;
 import java.util.Map;
 
+@Entity("cache")
 public class ShibeResult {
 
     private static final String API_URI = "http://shiba.vil.so/";
     private final boolean success;
     private final Map<String, Float> prediction;
+    @Id
+    private String fileID;
     private String category = "none";
 
     public ShibeResult(boolean success, Map<String, Float> prediction) {
         this.success = success;
         this.prediction = prediction;
+    }
+
+    public ShibeResult(ShibeResult parent, String fileID) {
+        this.success = parent.success;
+        this.prediction = parent.prediction;
+        this.fileID = fileID;
     }
 
     public ShibeResult(ShibeResult from) {
@@ -29,7 +40,7 @@ public class ShibeResult {
         return new ShibeResult(false,null);
     }
 
-    public static ShibeResult shibeResult(File image) {
+    public static ShibeResult shibeResult(File image, String fileID) {
         HttpResponse<String> response;
 
         try {
@@ -46,7 +57,9 @@ public class ShibeResult {
             return nullResult();
         }
 
-        return new Gson().fromJson(response.getBody(), ShibeResult.class);
+        ShibeResult result =  new Gson().fromJson(response.getBody(), ShibeResult.class);
+        result.fileID = fileID;
+        return result;
     }
 
     public boolean isShibe() {

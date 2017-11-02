@@ -1,11 +1,9 @@
 package me.bo0tzz.shibeornoshibe.engine;
 
 import me.bo0tzz.shibeornoshibe.ShibeOrNoShibe;
-import me.bo0tzz.shibeornoshibe.bean.CachedShibeResult;
 import me.bo0tzz.shibeornoshibe.bean.ShibeResult;
 import me.bo0tzz.shibeornoshibe.bean.ShibeUser;
 import me.bo0tzz.shibeornoshibe.db.ShibeMorphia;
-import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
@@ -71,7 +69,7 @@ public class ShibeListener implements Listener {
                 event.getChat().sendMessage("Unfortunately something went wrong while processing your image. Please contact @bo0tzz and mention error code " + uuid);
                 return;
             }
-            confidence = ShibeResult.shibeResult(image);
+            confidence = ShibeResult.shibeResult(image, event.getContent().getContent()[0].getFileId());
             if (confidence == null) {
                 event.getChat().sendMessage("Something has gone wrong while checking if your image is a shibe! If this keeps happening, please contact @bo0tzz");
                 return;
