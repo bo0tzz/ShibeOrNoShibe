@@ -34,7 +34,11 @@ public class ShibeCommandListener implements Listener {
 
     private void about(CommandMessageReceivedEvent event) {
         event.getChat().sendMessage(SendableTextMessage.markdown(
-           ""
+           "*Welcome to the Shibe or no Shibe bot!*\n" +
+                   "This bot uses a neural net to determine the content of images you send.\n" +
+                   "You can tell the bot to tag you when an image of a shibe or a doggo is sent, using the respective commands.\n" +
+                   "If you have any questions, problems or feature requests, please do not hesitate to contact @bo0tzz!" +
+                   "The source of this bot is available on [GitHub](https://github.com/bo0tzz/ShibeOrNoShibe)."
         ).build());
     }
 
