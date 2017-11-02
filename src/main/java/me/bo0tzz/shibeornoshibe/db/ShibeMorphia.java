@@ -1,5 +1,6 @@
 package me.bo0tzz.shibeornoshibe.db;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import me.bo0tzz.shibeornoshibe.bean.Category;
 import me.bo0tzz.shibeornoshibe.bean.ShibeGroup;
@@ -9,6 +10,7 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
+import org.mongodb.morphia.query.UpdateResults;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.GroupChat;
 
@@ -50,7 +52,7 @@ public class ShibeMorphia {
 
     public ShibeGroup getShibeGroup (Chat chat) {
         ShibeGroup group = datastore.createQuery(ShibeGroup.class)
-                .field("groupID").equal(chat.getId())
+                .field("_id").equal(chat.getId())
                 .get();
 
         if (group == null && chat instanceof GroupChat) {
@@ -60,25 +62,36 @@ public class ShibeMorphia {
         return group;
     }
 
+    public boolean updateShibeGroup(ShibeGroup group) {
+        Query<ShibeGroup> query = datastore.find(ShibeGroup.class)
+                .field("_id").equal(group.getGroupID());
+        UpdateOperations<ShibeGroup> update = datastore.createUpdateOperations(ShibeGroup.class)
+                .set("users", group.getUsers());
+        UpdateResults r = datastore.update(query, update);
+        return r.getUpdatedCount() + r.getInsertedCount() > 0;
+    }
+
     public void saveShibeGroup(ShibeGroup group) {
         datastore.save(group);
     }
 
-    public void updateUserName(long UID, String username) {
+    public boolean updateUserName(long UID, String username) {
         Query<ShibeGroup> query = datastore.find(ShibeGroup.class)
-                .field("users.UID").equal(UID);
+                .field("users").equal(new BasicDBObject("UID", UID));
         UpdateOperations<ShibeGroup> update = datastore.createUpdateOperations(ShibeGroup.class)
                 .set("users.$.username", username);
-        datastore.update(query, update);
+        UpdateResults r = datastore.update(query, update);
+        return r.getUpdatedCount() > 0;
     }
 
-    public void updateUser(ShibeUser user) {
+    public boolean updateUser(ShibeUser user) {
         Query<ShibeGroup> query = datastore.find(ShibeGroup.class)
-                .field("users.UID").equal(user.getUID());
+                .field("users").equal(new BasicDBObject("UID", user.getUID()));
         UpdateOperations<ShibeGroup> update = datastore.createUpdateOperations(ShibeGroup.class)
                 .set("users.$.username", user.getUsername())
                 .set("users.$.pingShibe", user.isPingShibe())
                 .set("users.$.pingDoggo", user.isPingDoggo());
-        datastore.update(query, update);
+        UpdateResults r = datastore.update(query, update);
+        return r.getUpdatedCount() > 0;
     }
 }

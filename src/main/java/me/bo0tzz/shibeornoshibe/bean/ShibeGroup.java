@@ -32,4 +32,7 @@ public class ShibeGroup {
         return users;
     }
 
+    public String getGroupID() {
+        return groupID;
+    }
 }
