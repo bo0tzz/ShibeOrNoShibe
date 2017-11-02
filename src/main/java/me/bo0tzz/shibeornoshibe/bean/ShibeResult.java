@@ -18,7 +18,7 @@ public class ShibeResult {
     private Map<String, Float> prediction;
     @Id
     private String fileID;
-    private String category = "none";
+    private String category;
 
     public ShibeResult(boolean success, Map<String, Float> prediction) {
         this.success = success;
@@ -74,7 +74,7 @@ public class ShibeResult {
     }
 
     public String getCategory() {
-        if (category.equals("none")) {
+        if (category == null) {
             float maxVal = 0f;
             for (Map.Entry<String, Float> e : prediction.entrySet()) {
                 if (e.getValue() > maxVal) {
