@@ -23,7 +23,6 @@ public class ShibeMorphia {
 
     public ShibeMorphia() {
         this.morphia = new Morphia();
-        morphia.getMapper().getOptions().setObjectFactory(new CustomMorphiaObjectFactory());
         morphia.mapPackage("me.bo0tzz.shibeornoshibe.bean");
         MongoClient mongo = new MongoClient(System.getenv("MONGO_IP")); //if env var does not exist, default 'localhost' will be used
         this.datastore = morphia.createDatastore(mongo, "shibe");

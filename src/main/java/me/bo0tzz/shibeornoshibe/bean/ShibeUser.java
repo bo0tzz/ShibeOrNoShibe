@@ -1,6 +1,7 @@
 package me.bo0tzz.shibeornoshibe.bean;
 
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -9,6 +10,7 @@ import pro.zackpollard.telegrambot.api.user.User;
 @Entity("user")
 @Builder(toBuilder = true)
 @Value
+@NoArgsConstructor(force = true)
 public class ShibeUser {
 
     @Id

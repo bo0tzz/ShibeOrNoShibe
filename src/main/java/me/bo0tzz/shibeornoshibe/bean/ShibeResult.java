@@ -6,6 +6,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 import me.bo0tzz.shibeornoshibe.gson.ShibeResultDeserializer;
 import org.mongodb.morphia.annotations.Entity;
@@ -17,6 +18,7 @@ import java.util.Map;
 @Entity("cache")
 @Builder(toBuilder = true)
 @Value
+@NoArgsConstructor(force = true)
 public class ShibeResult {
 
     private static final String API_URI = "http://shiba.vil.so/";
