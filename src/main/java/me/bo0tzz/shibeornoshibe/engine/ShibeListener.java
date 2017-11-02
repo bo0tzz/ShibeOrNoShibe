@@ -94,7 +94,7 @@ public class ShibeListener implements Listener {
             case SUPERGROUP:
                 System.out.println("Chat is a group type!");
                 List<ShibeUser> users = morphia.getUsersToTag(event.getChat(), confidence.getCategory());
-                if (users == null) {
+                if (users == null || users.isEmpty()) {
                     event.getChat().sendMessage(String.format(OUTPUT_TAG, confidence.getCategory(), "Nobody :("));
                     return;
                 }
