@@ -1,6 +1,7 @@
 package me.bo0tzz.shibeornoshibe.db;
 
 import com.mongodb.MongoClient;
+import me.bo0tzz.shibeornoshibe.bean.Category;
 import me.bo0tzz.shibeornoshibe.bean.ShibeGroup;
 import me.bo0tzz.shibeornoshibe.bean.ShibeResult;
 import me.bo0tzz.shibeornoshibe.bean.ShibeUser;
@@ -41,7 +42,7 @@ public class ShibeMorphia {
                 .get();
     }
 
-    public List<ShibeUser> getUsersToTag(Chat chat, String category) {
+    public List<ShibeUser> getUsersToTag(Chat chat, Category category) {
         ShibeGroup group = getShibeGroup(chat);
         if (group == null) return null;
         return group.getUsers().stream().filter(user -> user.pingFor(category)).collect(Collectors.toList());

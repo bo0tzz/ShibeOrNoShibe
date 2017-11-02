@@ -95,14 +95,14 @@ public class ShibeListener implements Listener {
                 System.out.println("Chat is a group type!");
                 List<ShibeUser> users = morphia.getUsersToTag(event.getChat(), confidence.getCategory());
                 if (users == null || users.isEmpty()) {
-                    event.getChat().sendMessage(String.format(OUTPUT_TAG, confidence.getCategory(), "Nobody :("));
+                    event.getChat().sendMessage(String.format(OUTPUT_TAG, confidence.getCategory().toString().toLowerCase(), "Nobody :("));
                     return;
                 }
                 StringJoiner joiner = new StringJoiner(" ", "", "");
                 for (ShibeUser u : users) {
                     joiner.add(u.getUsername());
                 }
-                out = String.format(OUTPUT_TAG, confidence.getCategory(), joiner.toString());
+                out = String.format(OUTPUT_TAG, confidence.getCategory().toString().toLowerCase(), joiner.toString());
                 break;
             case PRIVATE:
             case CHANNEL:

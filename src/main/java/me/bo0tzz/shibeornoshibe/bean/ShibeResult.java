@@ -18,7 +18,7 @@ public class ShibeResult {
     private Map<String, Float> prediction;
     @Id
     private String fileID;
-    private String category;
+    private Category category;
 
     public ShibeResult(boolean success, Map<String, Float> prediction) {
         this.success = success;
@@ -66,22 +66,16 @@ public class ShibeResult {
     }
 
     public boolean isShibe() {
-        return category.equals("shiba");
+        return category == Category.SHIBE;
     }
 
     public boolean isDoggo() {
-        return category.equals("doggo");
+        return category == Category.DOGGO;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         if (category == null) {
-            float maxVal = 0f;
-            for (Map.Entry<String, Float> e : prediction.entrySet()) {
-                if (e.getValue() > maxVal) {
-                    maxVal = e.getValue();
-                    category = e.getKey();
-                }
-            }
+            category = Category.fromPredictionMap(prediction);
         }
         return category;
     }

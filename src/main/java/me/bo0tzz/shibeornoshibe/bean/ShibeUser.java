@@ -39,11 +39,11 @@ public class ShibeUser {
         this.pingDoggo = pingDoggo;
     }
 
-    public boolean pingFor(String s) {
-        switch (s) {
-            case "doggo":
+    public boolean pingFor(Category c) {
+        switch (c) {
+            case DOGGO:
                 return  pingDoggo;
-            case "shiba":
+            case SHIBE:
                 return pingShibe;
             default:
                 return false;
