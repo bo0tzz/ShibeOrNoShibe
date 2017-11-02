@@ -14,8 +14,8 @@ import java.util.Map;
 public class ShibeResult {
 
     private static final String API_URI = "http://shiba.vil.so/";
-    private final boolean success;
-    private final Map<String, Float> prediction;
+    private boolean success;
+    private Map<String, Float> prediction;
     @Id
     private String fileID;
     private String category = "none";
@@ -26,14 +26,17 @@ public class ShibeResult {
     }
 
     public ShibeResult(ShibeResult parent, String fileID) {
-        this.success = parent.success;
-        this.prediction = parent.prediction;
+        this(parent);
         this.fileID = fileID;
     }
 
     public ShibeResult(ShibeResult from) {
         this.success = from.isSuccess();
         this.prediction = from.getPrediction();
+    }
+
+    public ShibeResult() {
+        //Method to allow Morphia to instantiate class
     }
 
     public static ShibeResult nullResult() {
