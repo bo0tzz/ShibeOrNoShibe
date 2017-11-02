@@ -22,9 +22,9 @@ public class ShibeListener implements Listener {
     private final static String OUTPUT_TAG = "A new %s image was sent! Tagging: %s";
     private final static String OUTPUT = "*Shiba*: %.2f%%\n*Doggo:* %.2f%%\n*Random*: %.2f%%";
 
-    public ShibeListener(ShibeOrNoShibe main) {
+    public ShibeListener(ShibeOrNoShibe main, ShibeMorphia morphia) {
         this.main = main;
-        this.morphia = new ShibeMorphia();
+        this.morphia = morphia;
     }
 
     @Override

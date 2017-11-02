@@ -1,10 +1,14 @@
 package me.bo0tzz.shibeornoshibe;
 
+import me.bo0tzz.shibeornoshibe.db.ShibeMorphia;
+import me.bo0tzz.shibeornoshibe.engine.ShibeCommandListener;
 import me.bo0tzz.shibeornoshibe.engine.ShibeListener;
+import org.mongodb.morphia.Morphia;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 
 public class ShibeOrNoShibe {
     private final TelegramBot bot;
+    private final ShibeMorphia morphia;
 
     public static void main(String[] args) {
         String key = System.getenv("BOT_KEY");
@@ -14,7 +18,9 @@ public class ShibeOrNoShibe {
 
     ShibeOrNoShibe(String key) {
         this.bot = TelegramBot.login(key);
-        bot.getEventsManager().register(new ShibeListener(this));
+        morphia = new ShibeMorphia();
+        bot.getEventsManager().register(new ShibeListener(this, morphia));
+        bot.getEventsManager().register(new ShibeCommandListener(this, morphia));
         bot.startUpdates(false);
     }
 
