@@ -1,6 +1,7 @@
 package me.bo0tzz.shibeornoshibe.engine;
 
 import me.bo0tzz.shibeornoshibe.ShibeOrNoShibe;
+import me.bo0tzz.shibeornoshibe.bean.Category;
 import me.bo0tzz.shibeornoshibe.bean.ShibeResult;
 import me.bo0tzz.shibeornoshibe.bean.ShibeUser;
 import me.bo0tzz.shibeornoshibe.db.ShibeMorphia;
@@ -93,6 +94,7 @@ public class ShibeListener implements Listener {
             case GROUP:
             case SUPERGROUP:
                 System.out.println("Chat is a group type!");
+                if (confidence.getCategory() == Category.RANDOM) return;
                 List<ShibeUser> users = morphia.getUsersToTag(event.getChat(), confidence.getCategory());
                 if (users == null || users.isEmpty()) {
                     event.getChat().sendMessage(String.format(OUTPUT_TAG, confidence.getCategory().toString().toLowerCase(), "Nobody :("));
