@@ -1,8 +1,10 @@
 package me.bo0tzz.shibeornoshibe.bean;
 
+import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import pro.zackpollard.telegrambot.api.user.User;
 
+@Entity
 public class ShibeUser {
 
     @Id

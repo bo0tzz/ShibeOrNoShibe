@@ -76,19 +76,19 @@ public class ShibeMorphia {
     }
 
     public boolean updateUserName(long UID, String username) {
-        Query<ShibeGroup> query = datastore.find(ShibeGroup.class)
-                .field("users").elemMatch(
-                        datastore.createQuery(ShibeUser.class)
-                        .field("UID").equal(UID));
+        Query query = datastore.find(ShibeUser.class)
+                .field("_id").equal(UID);
+
         UpdateOperations<ShibeGroup> update = datastore.createUpdateOperations(ShibeGroup.class)
                 .set("users.$.username", username);
+
         UpdateResults r = datastore.update(query, update);
         return r.getUpdatedCount() > 0;
     }
 
     public boolean updateUser(ShibeUser user) {
-        Query<ShibeGroup> query = datastore.find(ShibeGroup.class)
-                .field("users").equal(new BasicDBObject("UID", user.getUID()));
+        Query query = datastore.find(ShibeUser.class)
+                .field("_id").equal(user.getUID());
         UpdateOperations<ShibeGroup> update = datastore.createUpdateOperations(ShibeGroup.class)
                 .set("users.$.username", user.getUsername())
                 .set("users.$.pingShibe", user.isPingShibe())
