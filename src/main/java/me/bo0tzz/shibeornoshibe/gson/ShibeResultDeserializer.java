@@ -16,14 +16,13 @@ public class ShibeResultDeserializer implements JsonDeserializer<ShibeResult> {
         JsonObject object = jsonElement.getAsJsonObject();
         boolean success = object.get("success").getAsBoolean();
         Map<String, Float> prediction = new HashMap<>();
-        for (JsonElement o : object.get("prediction").getAsJsonArray()) {
-            for (Map.Entry<String, JsonElement> e : o.getAsJsonObject().entrySet()) {
-                prediction.put(
-                        e.getKey(),
-                        e.getValue().getAsFloat()
-                );
-            }
+        for (Map.Entry<String, JsonElement> e : object.get("prediction").getAsJsonObject().entrySet()) {
+            prediction.put(
+                    e.getKey(),
+                    e.getValue().getAsFloat()
+            );
         }
+
         Category category = Category.fromPredictionMap(prediction);
 
         return ShibeResult.builder()
