@@ -50,6 +50,7 @@ public class ShibeListener implements Listener {
         if (user != null) {
             boolean userSuccess = morphia.updateUserName(user.getId(), user.getUsername());
             if (!userSuccess) {
+                morphia.saveShibeUser(ShibeUser.from(user));
                 ShibeGroup g = morphia.getShibeGroup(chat);
                 if (g == null) return; //I'm a retard
                 g = g.addUser(ShibeUser.from(user));
