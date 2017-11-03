@@ -19,7 +19,7 @@ public class ShibeGroup {
     @Id
     private final String groupID;
 
-    @Reference
+    @Reference(lazy = true)
     @Singular
     private final List<ShibeUser> users;
 
