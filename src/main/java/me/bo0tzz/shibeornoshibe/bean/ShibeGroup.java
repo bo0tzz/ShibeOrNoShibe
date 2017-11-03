@@ -1,9 +1,6 @@
 package me.bo0tzz.shibeornoshibe.bean;
 
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Singular;
-import lombok.Value;
+import lombok.*;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Reference;
@@ -16,6 +13,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 @Value
 @NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class ShibeGroup {
 
     @Id

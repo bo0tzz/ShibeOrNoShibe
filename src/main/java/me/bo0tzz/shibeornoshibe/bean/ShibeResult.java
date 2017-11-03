@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
@@ -19,6 +20,7 @@ import java.util.Map;
 @Builder(toBuilder = true)
 @Value
 @NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class ShibeResult {
 
     private static final String API_URI = "http://shiba.vil.so/";

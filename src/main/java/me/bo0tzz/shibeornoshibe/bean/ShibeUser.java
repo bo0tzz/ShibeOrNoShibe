@@ -1,5 +1,6 @@
 package me.bo0tzz.shibeornoshibe.bean;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
@@ -11,6 +12,7 @@ import pro.zackpollard.telegrambot.api.user.User;
 @Builder(toBuilder = true)
 @Value
 @NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class ShibeUser {
 
     @Id
