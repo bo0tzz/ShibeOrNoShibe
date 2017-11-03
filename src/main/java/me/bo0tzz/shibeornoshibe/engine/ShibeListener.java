@@ -11,7 +11,6 @@ import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageEditReceivedEvent;
-import pro.zackpollard.telegrambot.api.event.chat.message.MessageEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.PhotoMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.user.User;
@@ -51,13 +50,13 @@ public class ShibeListener implements Listener {
             boolean userSuccess = morphia.updateUserName(user.getId(), user.getUsername());
             if (!userSuccess) {
                 morphia.saveShibeUser(ShibeUser.from(user));
-                ShibeGroup g = morphia.getShibeGroup(chat);
-                if (g == null) return; //I'm a retard
-                g = g.addUser(ShibeUser.from(user));
-                boolean groupSuccess = morphia.updateShibeGroup(g);
-                if (!groupSuccess) {
-                    morphia.saveShibeGroup(g);
-                }
+            }
+            ShibeGroup g = morphia.getShibeGroup(chat);
+            if (g == null) return; //I'm a retard
+            g = g.addUser(ShibeUser.from(user));
+            boolean groupSuccess = morphia.updateShibeGroup(g);
+            if (!groupSuccess) {
+                morphia.saveShibeGroup(g);
             }
         }
     }

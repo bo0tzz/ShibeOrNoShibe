@@ -3,7 +3,6 @@ package me.bo0tzz.shibeornoshibe;
 import me.bo0tzz.shibeornoshibe.db.ShibeMorphia;
 import me.bo0tzz.shibeornoshibe.engine.ShibeCommandListener;
 import me.bo0tzz.shibeornoshibe.engine.ShibeListener;
-import org.mongodb.morphia.Morphia;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 
 public class ShibeOrNoShibe {

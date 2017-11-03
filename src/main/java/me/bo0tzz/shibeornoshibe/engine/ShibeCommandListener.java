@@ -29,7 +29,7 @@ public class ShibeCommandListener implements Listener {
 
     @Override
     public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
-
+        commandMap.get(event.getCommand()).accept(event);
     }
 
     private void about(CommandMessageReceivedEvent event) {

@@ -7,7 +7,7 @@ import org.mongodb.morphia.annotations.Reference;
 import pro.zackpollard.telegrambot.api.chat.GroupChat;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Entity("group")
 @Builder(toBuilder = true)
@@ -21,7 +21,7 @@ public class ShibeGroup {
 
     @Reference(lazy = true)
     @Singular
-    private final List<ShibeUser> users;
+    private final Set<ShibeUser> users;
 
     public static ShibeGroup from(GroupChat chat) {
         return builder().groupID(chat.getId()).users(new ArrayList<>()).build();
