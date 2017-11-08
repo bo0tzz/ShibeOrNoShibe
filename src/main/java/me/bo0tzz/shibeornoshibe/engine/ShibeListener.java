@@ -24,6 +24,7 @@ public class ShibeListener implements Listener {
     private final ShibeMorphia morphia;
     private final static String OUTPUT_TAG = "A new %s image was sent! Tagging: %s";
     private final static String OUTPUT = "*Shiba*: %.2f%%\n*Doggo:* %.2f%%\n*Random*: %.2f%%";
+    private final static String DEBUG_CHAT = "-291629802";
 
     public ShibeListener(ShibeOrNoShibe main, ShibeMorphia morphia) {
         this.main = main;
@@ -73,12 +74,15 @@ public class ShibeListener implements Listener {
             } catch (IOException e) {
                 System.out.println("Error happened: " + uuid);
                 e.printStackTrace();
-                event.getChat().sendMessage("Unfortunately something went wrong while processing your image. Please contact @bo0tzz and mention error code " + uuid);
+                main.getBot().getChat(DEBUG_CHAT).sendMessage("Something went wrong while processing this image:");
+                event.getMessage().forwardMessage(main.getBot().getChat(DEBUG_CHAT));
+                main.getBot().getChat(DEBUG_CHAT).sendMessage("The error was as follows: " + e);
                 return;
             }
             result = ShibeResult.from(image, event.getContent().getContent()[0].getFileId());
             if (result == null) {
-                event.getChat().sendMessage("Something has gone wrong while checking if your image is a shibe! If this keeps happening, please contact @bo0tzz");
+                main.getBot().getChat(DEBUG_CHAT).sendMessage("Something went wrong while processing this image:");
+                event.getMessage().forwardMessage(main.getBot().getChat(DEBUG_CHAT));
                 return;
             }
         }
